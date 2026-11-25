@@ -6,19 +6,46 @@ import ModeSelect from './components/ModeSelect';
 import MultiplayerScreen from './components/MultiplayerScreen';
 
 export default function App() {
-  // Текущий активный экран
   const [currentScreen, setCurrentScreen] = useState('menu');
-  
-  // Режим игры ('bot' или 'multiplayer'), передается в GameScreen
   const [gameMode, setGameMode] = useState('bot');
+  
+  // Состояние для эффекта затемнения
+  const [isFading, setIsFading] = useState(false);
+  // Состояние для хранения следующего экрана
+  const [nextScreen, setNextScreen] = useState(null);
 
-  // Универсальная функция навигации
   const handleNavigate = (screen, options = {}) => {
-    // Если переходим в игру и передан режим — сохраняем его
-    if (screen === 'game' && options?.mode) {
-      setGameMode(options.mode);
+    // Если переход на тот же экран - ничего не делаем
+    if (screen === currentScreen) return;
+
+    // Запоминаем, куда хотим перейти
+    setNextScreen({ screen, options });
+    // Включаем затемнение
+    setIsFading(true);
+
+    // Ждем 500мс (половина анимации - затемнение)
+    setTimeout(() => {
+      // Меняем экран
+      if (options?.mode) setGameMode(options.mode);
+      setCurrentScreen(screen);
+      
+      // Ждем еще 50мс, чтобы новый экран успел отрендериться в темноте
+      setTimeout(() => {
+        // Выключаем затемнение (экран плавно проявляется)
+        setIsFading(false);
+      }, 50);
+    }, 500);
+  };
+
+  const renderScreen = () => {
+    switch (currentScreen) {
+      case 'menu': return <MainMenu onNavigate={handleNavigate} />;
+      case 'help': return <HelpScreen onNavigate={handleNavigate} />;
+      case 'modeSelect': return <ModeSelect onNavigate={handleNavigate} />;
+      case 'multiplayer': return <MultiplayerScreen onNavigate={handleNavigate} />;
+      case 'game': return <GameScreen onNavigate={handleNavigate} mode={gameMode} />;
+      default: return <MainMenu onNavigate={handleNavigate} />;
     }
-    setCurrentScreen(screen);
   };
 
   return (
@@ -29,40 +56,23 @@ export default function App() {
       backgroundColor: '#1a1a1a',
       position: 'relative'
     }}>
-      {/* Главное меню */}
-      {currentScreen === 'menu' && (
-        <div className="screen-fade">
-          <MainMenu onNavigate={handleNavigate} />
-        </div>
-      )}
-      
-      {/* Экран помощи */}
-      {currentScreen === 'help' && (
-        <div className="screen-fade">
-          <HelpScreen onNavigate={handleNavigate} />
-        </div>
-      )}
+      {/* Текущий экран */}
+      <div className="screen-fade">
+        {renderScreen()}
+      </div>
 
-      {/* Экран выбора режима (Против бота / Против игрока) */}
-      {currentScreen === 'modeSelect' && (
-        <div className="screen-fade">
-          <ModeSelect onNavigate={handleNavigate} />
-        </div>
-      )}
-
-      {/* Экран мультиплеера (Создать / Присоединиться) */}
-      {currentScreen === 'multiplayer' && (
-        <div className="screen-fade">
-          <MultiplayerScreen onNavigate={handleNavigate} />
-        </div>
-      )}
-
-      {/* Экран самой игры */}
-      {currentScreen === 'game' && (
-        <div className="screen-fade">
-          <GameScreen onNavigate={handleNavigate} mode={gameMode} />
-        </div>
-      )}
+      {/* Оверлей затемнения */}
+      <div 
+        style={{
+          position: 'absolute',
+          top: 0, left: 0, right: 0, bottom: 0,
+          backgroundColor: '#000',
+          pointerEvents: isFading ? 'all' : 'none', // Блокируем клики во время затемнения
+          opacity: isFading ? 1 : 0,
+          transition: 'opacity 0.5s ease-in-out',
+          zIndex: 9999 // Поверх всего
+        }}
+      />
     </div>
   );
 }
