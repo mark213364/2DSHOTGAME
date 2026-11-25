@@ -5,7 +5,7 @@ export default function MainMenu({ onNavigate }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
   const menuItems = [
-    { label: 'Играть', action: () => console.log('Запуск игры') },
+    { label: 'Играть', action: () => console.log('game') },
     { label: 'Настройки', action: () => console.log('Открытие настроек') },
     { label: 'Помощь', action: () => onNavigate('help') }
   ];
