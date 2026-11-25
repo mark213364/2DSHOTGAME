@@ -37,11 +37,15 @@
   font-size: 22px;
   padding: 10px;
   cursor: pointer;
-  transition: all 0.2s ease; /* <-- Эта строка нужна для плавности */
+  transition: all 0.2s ease;
   font-family: inherit;
   font-weight: bold;
   letter-spacing: 2px;
   text-transform: uppercase;
+  
+  /* Добавляем эти две строки: */
+  white-space: nowrap; /* Запрещает перенос текста на новую строку */
+  text-align: center;  /* Выравнивает текст по центру, если он все же сожмется */
 }
 
 .menu-btn.selected {
