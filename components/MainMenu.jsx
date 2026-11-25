@@ -4,9 +4,10 @@ import './MainMenu.css';
 export default function MainMenu({ onNavigate }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
+  // Обратите внимание на action для кнопки "Играть"
   const menuItems = [
-    { label: 'Играть', action: () => console.log('game') },
-    { label: 'Настройки', action: () => console.log('Открытие настроек') },
+    { label: 'Играть', action: () => onNavigate('game') }, 
+    { label: 'Настройки', action: () => console.log('Настройки в разработке') },
     { label: 'Помощь', action: () => onNavigate('help') }
   ];
 
@@ -24,6 +25,7 @@ export default function MainMenu({ onNavigate }) {
               item.action();
             }}
           >
+            {/* Рендерим обрамление > ... < только для выбранной кнопки */}
             {selectedIndex === index ? `> ${item.label} <` : item.label}
           </button>
         ))}
