@@ -264,3 +264,23 @@
   .case-center { width: 100px; height: 100px; }
   .case-icon { font-size: 48px; }
 }
+
+.shotgun-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 100%;
+  padding: 20px;
+  box-sizing: border-box;
+  transition: transform 0.5s ease; /* Плавный поворот */
+}
+
+/* Дробовик смотрит на игрока (ствол вниз, приклад вверх) */
+.shotgun-display.aim-self {
+  transform: rotate(90deg);
+}
+
+/* Дробовик смотрит на врага (ствол вправо, приклад влево) */
+.shotgun-display.aim-enemy {
+  transform: rotate(0deg);
+}
