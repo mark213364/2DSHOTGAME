@@ -8,32 +8,20 @@ import MultiplayerScreen from './components/MultiplayerScreen';
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('menu');
   const [gameMode, setGameMode] = useState('bot');
-  
-  // Состояние для эффекта затемнения
+  const [roomCode, setRoomCode] = useState(null); // Код комнаты для мультиплеера
   const [isFading, setIsFading] = useState(false);
-  // Состояние для хранения следующего экрана
-  const [nextScreen, setNextScreen] = useState(null);
 
   const handleNavigate = (screen, options = {}) => {
-    // Если переход на тот же экран - ничего не делаем
     if (screen === currentScreen) return;
-
-    // Запоминаем, куда хотим перейти
-    setNextScreen({ screen, options });
-    // Включаем затемнение
+    
     setIsFading(true);
 
-    // Ждем 500мс (половина анимации - затемнение)
     setTimeout(() => {
-      // Меняем экран
       if (options?.mode) setGameMode(options.mode);
+      if (options?.roomCode) setRoomCode(options.roomCode);
       setCurrentScreen(screen);
       
-      // Ждем еще 50мс, чтобы новый экран успел отрендериться в темноте
-      setTimeout(() => {
-        // Выключаем затемнение (экран плавно проявляется)
-        setIsFading(false);
-      }, 50);
+      setTimeout(() => setIsFading(false), 50);
     }, 500);
   };
 
@@ -43,7 +31,7 @@ export default function App() {
       case 'help': return <HelpScreen onNavigate={handleNavigate} />;
       case 'modeSelect': return <ModeSelect onNavigate={handleNavigate} />;
       case 'multiplayer': return <MultiplayerScreen onNavigate={handleNavigate} />;
-      case 'game': return <GameScreen onNavigate={handleNavigate} mode={gameMode} />;
+      case 'game': return <GameScreen onNavigate={handleNavigate} mode={gameMode} roomCode={roomCode} />;
       default: return <MainMenu onNavigate={handleNavigate} />;
     }
   };
@@ -56,7 +44,6 @@ export default function App() {
       backgroundColor: '#1a1a1a',
       position: 'relative'
     }}>
-      {/* Текущий экран */}
       <div className="screen-fade">
         {renderScreen()}
       </div>
@@ -67,10 +54,10 @@ export default function App() {
           position: 'absolute',
           top: 0, left: 0, right: 0, bottom: 0,
           backgroundColor: '#000',
-          pointerEvents: isFading ? 'all' : 'none', // Блокируем клики во время затемнения
+          pointerEvents: isFading ? 'all' : 'none',
           opacity: isFading ? 1 : 0,
           transition: 'opacity 0.5s ease-in-out',
-          zIndex: 9999 // Поверх всего
+          zIndex: 9999
         }}
       />
     </div>
