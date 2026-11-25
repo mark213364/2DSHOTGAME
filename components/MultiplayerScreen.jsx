@@ -1,12 +1,10 @@
 import { useState } from 'react';
-import Toast from './Toast'; // <-- Импортируем Toast
+import Toast from './Toast';
 import './MainMenu.css';
 
 export default function MultiplayerScreen({ onNavigate }) {
   const [code, setCode] = useState('');
   const [hoveredBtn, setHoveredBtn] = useState(null);
-  
-  // Состояние для уведомления
   const [toast, setToast] = useState({ isVisible: false, message: '' });
 
   const showToast = (message) => {
@@ -15,12 +13,12 @@ export default function MultiplayerScreen({ onNavigate }) {
 
   const createGame = () => {
     const newCode = Math.floor(10000000 + Math.random() * 90000000).toString();
-    showToast(`Игра создана! Код: ${newCode}`);
+    onNavigate('game', { mode: 'multiplayer_wait', roomCode: newCode });
   };
 
   const joinGame = () => {
     if (code.length === 8) {
-      showToast(`Подключение к игре ${code}...`);
+      onNavigate('game', { mode: 'multiplayer_wait', roomCode: code });
     } else {
       showToast('Введите 8-значный код!');
     }
@@ -48,13 +46,8 @@ export default function MultiplayerScreen({ onNavigate }) {
             onChange={(e) => setCode(e.target.value)}
             maxLength={8}
             style={{ 
-              padding: '10px', 
-              textAlign: 'center', 
-              fontSize: '18px', 
-              background: '#333', 
-              color: 'white', 
-              border: '1px solid #555', 
-              borderRadius: '5px' 
+              padding: '10px', textAlign: 'center', fontSize: '18px', 
+              background: '#333', color: 'white', border: '1px solid #555', borderRadius: '5px' 
             }}
           />
           <button 
@@ -78,12 +71,7 @@ export default function MultiplayerScreen({ onNavigate }) {
         </button>
       </div>
 
-      {/* Уведомление */}
-      <Toast 
-        message={toast.message} 
-        isVisible={toast.isVisible} 
-        onClose={() => setToast({ ...toast, isVisible: false })} 
-      />
+      <Toast message={toast.message} isVisible={toast.isVisible} onClose={() => setToast({ ...toast, isVisible: false })} />
     </div>
   );
 }
