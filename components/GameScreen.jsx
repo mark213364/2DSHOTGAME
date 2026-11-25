@@ -6,8 +6,7 @@ export default function GameScreen({ onNavigate }) {
   const [enemyHp, setEnemyHp] = useState(6);
   const [turn, setTurn] = useState('player');
   
-  // Кейсы (3 штуки)
-  const [cases, setCases] = useState([1, 1, 1]); // 1 = закрыт
+  const [cases, setCases] = useState([1, 1, 1]); // 1 = закрыт, 0 = открыт
   const [showSurrenderModal, setShowSurrenderModal] = useState(false);
 
   const [shells, setShells] = useState([]);
@@ -40,7 +39,7 @@ export default function GameScreen({ onNavigate }) {
         const reloaded = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
         setShells(reloaded);
         setCurrentShell(reloaded[0]);
-        // Здесь можно добавить логику открытия кейса после раунда
+        // Здесь можно добавить логику открытия кейса (например, cases[0] = 0)
       }, 1000);
     } else {
       setCurrentShell(newShells[0]);
@@ -50,10 +49,8 @@ export default function GameScreen({ onNavigate }) {
     setTimeout(() => setTurn('player'), 2000);
   };
 
-  // Двойной клик для использования предмета
-  const handleItemDoubleClick = (itemName) => {
-    console.log(`Использован предмет: ${itemName}`);
-    // Здесь будет логика применения предмета
+  const handleItemDoubleClick = (itemName, index, side) => {
+    console.log(`Использован предмет: ${itemName} из ${side} сетки, слот ${index}`);
   };
 
   const confirmSurrender = () => {
@@ -62,7 +59,7 @@ export default function GameScreen({ onNavigate }) {
 
   return (
     <div className="game-container">
-      {/* Модальное окно подтверждения сдачи */}
+      {/* Модальное окно */}
       {showSurrenderModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -75,7 +72,7 @@ export default function GameScreen({ onNavigate }) {
         </div>
       )}
 
-      {/* Верхняя панель с кнопкой "Сдаться" */}
+      {/* Верхняя панель */}
       <div className="game-hud">
         <button className="surrender-btn" onClick={() => setShowSurrenderModal(true)}>
           Сдаться
@@ -84,7 +81,6 @@ export default function GameScreen({ onNavigate }) {
           <div className="hud-player">
             <span className="hud-label">ВЫ</span>
             <div className="hp-bar">
-              {/* Деления для здоровья (6 штук) */}
               {[...Array(6)].map((_, i) => (
                 <div key={i} className={`hp-segment ${i < playerHp ? 'filled' : ''}`}></div>
               ))}
@@ -116,37 +112,34 @@ export default function GameScreen({ onNavigate }) {
         </div>
       </div>
 
-      {/* Кейсы внизу (вместо выстрелов) */}
-      <div className="cases-bar">
-        <span className="cases-label">Кейсы:</span>
-        {cases.map((c, i) => (
-          <div key={i} className={`case-icon ${c === 0 ? 'opened' : ''}`}>
-            {c === 1 ? '📦' : '📭'}
-          </div>
-        ))}
-      </div>
-
       {/* Кнопки выстрелов */}
       <div className="action-bar">
         <button className="action-btn" onClick={() => handleShoot('self')} disabled={turn !== 'player'}>В СЕБЯ</button>
         <button className="action-btn" onClick={() => handleShoot('enemy')} disabled={turn !== 'player'}>В ВРАГА</button>
       </div>
 
-      {/* Панель предметов с двойным кликом */}
-      <div className="items-bar">
-        <div className="items-grid">
-          {['Пиво', 'Лупа', 'Сигарета', 'Пила', 'Наручники', 'Телефон'].map(item => (
-            <div 
-              key={item} 
-              className="item-slot"
-              onDoubleClick={() => handleItemDoubleClick(item)}
-              // Для мобильных устройств используем onTouchEnd для двойного тапа
-              onClick={(e) => {
-                // Простая имитация двойного тапа для мобильных
-                if (e.detail === 2) handleItemDoubleClick(item);
-              }}
-            >
-              {item}
+      {/* НОВАЯ ПАНЕЛЬ ПРЕДМЕТОВ И КЕЙСА */}
+      <div className="bottom-panel">
+        {/* Левая сетка предметов (2x2) */}
+        <div className="items-grid left-grid">
+          {[1, 2, 3, 4].map((id) => (
+            <div key={`left-${id}`} className="item-slot" onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'left')}>
+              {/* Сюда потом вставим иконки */}
+            </div>
+          ))}
+        </div>
+
+        {/* Центральный кейс */}
+        <div className="case-center" onClick={() => console.log('Клик по кейсу')}>
+          <div className="case-icon">📦</div>
+          <div className="case-count">{cases.filter(c => c === 1).length}</div>
+        </div>
+
+        {/* Правая сетка предметов (2x2) */}
+        <div className="items-grid right-grid">
+          {[1, 2, 3, 4].map((id) => (
+            <div key={`right-${id}`} className="item-slot" onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'right')}>
+              {/* Сюда потом вставим иконки */}
             </div>
           ))}
         </div>
