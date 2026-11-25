@@ -7,14 +7,13 @@
   background-color: #1a1a1a;
 }
 
-/* --- HUD (Верхняя панель) --- */
+/* --- HUD --- */
 .game-hud {
   display: flex;
   flex-direction: column;
   padding: 15px;
   background-color: #111;
   border-bottom: 2px solid #333;
-  position: relative;
 }
 
 .exit-btn {
@@ -28,9 +27,7 @@
   align-self: flex-start;
 }
 
-.exit-btn:hover {
-  color: white;
-}
+.exit-btn:hover { color: white; }
 
 .hud-stats {
   display: flex;
@@ -44,9 +41,7 @@
   width: 45%;
 }
 
-.hud-enemy {
-  align-items: flex-end;
-}
+.hud-enemy { align-items: flex-end; }
 
 .hud-label {
   font-size: 12px;
@@ -70,9 +65,7 @@
   transition: width 0.3s ease;
 }
 
-.hp-fill.enemy {
-  background-color: #ff3333; /* Враг тоже красный, или можно сделать оранжевым */
-}
+.hp-fill.enemy { background-color: #ff3333; }
 
 /* --- Игровое поле --- */
 .game-arena {
@@ -108,7 +101,7 @@
   font-size: 14px;
 }
 
-/* --- Кнопки выстрелов --- */
+/* --- Кнопки --- */
 .action-bar {
   display: flex;
   justify-content: center;
