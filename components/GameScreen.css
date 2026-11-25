@@ -1,0 +1,170 @@
+.game-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  width: 100%;
+  position: relative;
+  background-color: #1a1a1a;
+}
+
+/* --- HUD (Здоровье) --- */
+.game-hud {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px;
+  background-color: #111;
+  border-bottom: 2px solid #333;
+}
+
+.hud-player, .hud-enemy {
+  display: flex;
+  flex-direction: column;
+  width: 40%;
+}
+
+.hud-enemy {
+  align-items: flex-end;
+}
+
+.hud-label {
+  font-size: 12px;
+  color: #888;
+  margin-bottom: 5px;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+}
+
+.hp-bar {
+  width: 100%;
+  height: 12px;
+  background-color: #333;
+  border-radius: 6px;
+  overflow: hidden;
+}
+
+.hp-fill {
+  height: 100%;
+  background-color: #ff3333;
+  transition: width 0.3s ease;
+}
+
+/* --- Игровое поле (по центру) --- */
+.game-arena {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+}
+
+.shotgun-placeholder {
+  font-size: 20px;
+  color: #555;
+  letter-spacing: 2px;
+  padding: 40px;
+  border: 2px dashed #333;
+  border-radius: 10px;
+  text-transform: uppercase;
+  font-weight: bold;
+}
+
+.turn-indicator {
+  margin-top: 20px;
+  color: #ff3333;
+  font-weight: bold;
+  letter-spacing: 2px;
+  animation: pulse 2s infinite;
+  text-transform: uppercase;
+  font-size: 14px;
+}
+
+@keyframes pulse {
+  0% { opacity: 0.5; }
+  50% { opacity: 1; }
+  100% { opacity: 0.5; }
+}
+
+/* --- Кнопки выстрелов (В себя / В врага) --- */
+.action-bar {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  padding: 15px;
+  margin-bottom: 5px;
+}
+
+.action-btn {
+  background-color: #222;
+  border: 2px solid #ff3333;
+  color: white;
+  padding: 15px 25px;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  flex: 1;
+  max-width: 150px;
+}
+
+.action-btn:active {
+  background-color: #ff3333;
+  transform: scale(0.95);
+}
+
+/* --- Панель предметов (внизу) --- */
+.items-bar {
+  display: flex;
+  justify-content: center;
+  gap: 10px;
+  padding: 15px;
+  background-color: #222;
+  border-top: 2px solid #444;
+  min-height: 90px;
+}
+
+.item-slot {
+  width: 60px;
+  height: 60px;
+  background-color: #333;
+  border: 1px solid #555;
+  border-radius: 8px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-size: 10px;
+  color: #888;
+  cursor: pointer;
+  text-align: center;
+  padding: 5px;
+  box-sizing: border-box;
+  transition: all 0.2s;
+}
+
+.item-slot:active {
+  background-color: #444;
+  border-color: #ff3333;
+}
+
+/* --- Кнопка выхода --- */
+.exit-btn {
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  background: transparent;
+  border: 1px solid #555;
+  color: #888;
+  font-size: 12px;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  z-index: 10;
+}
+
+.exit-btn:hover {
+  color: white;
+  border-color: white;
+}
