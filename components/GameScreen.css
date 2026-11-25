@@ -144,6 +144,17 @@
   width: 100%;
   padding: 20px;
   box-sizing: border-box;
+  transition: transform 0.4s ease-in-out; /* Плавный поворот */
+}
+
+/* Дробовик смотрит ВНИЗ (в себя) */
+.shotgun-display.aim-self {
+  transform: rotate(90deg);
+}
+
+/* Дробовик смотрит ВВЕРХ (в врага) */
+.shotgun-display.aim-enemy {
+  transform: rotate(-90deg);
 }
 
 /* --- Информация о патронах --- */
