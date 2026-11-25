@@ -7,7 +7,7 @@ export default function App() {
 
   return (
     <div style={{ 
-      height: '100dvh', // dvh учитывает панели браузера на телефонах
+      height: '100dvh', 
       width: '100vw', 
       overflow: 'hidden',
       backgroundColor: '#1a1a1a'
