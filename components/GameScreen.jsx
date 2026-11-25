@@ -2,13 +2,12 @@ import { useState } from 'react';
 import './GameScreen.css';
 
 export default function GameScreen({ onNavigate }) {
-  // Пока здесь нет логики, только визуал
-  const [playerHp, setPlayerHp] = useState(100);
-  const [enemyHp, setEnemyHp] = useState(100);
+  const [playerHp] = useState(100);
+  const [enemyHp] = useState(100);
 
   return (
     <div className="game-container">
-      {/* Верхняя панель с жизнями и кнопкой выхода */}
+      {/* Верхняя панель */}
       <div className="game-hud">
         <button className="exit-btn" onClick={() => onNavigate('menu')}>
           &lt; Выход
@@ -29,7 +28,7 @@ export default function GameScreen({ onNavigate }) {
         </div>
       </div>
 
-      {/* Центральная часть — дробовик */}
+      {/* Игровое поле */}
       <div className="game-arena">
         <div className="turn-indicator">ВАШ ХОД</div>
         <div className="shotgun-placeholder">
