@@ -1,28 +1,36 @@
 import { useState, useEffect } from 'react';
+import Shotgun from './svg/Shotgun'; // Импорт дробовика из новой папки
 import './GameScreen.css';
 
 export default function GameScreen({ onNavigate }) {
+  // Состояния игры
   const [playerHp, setPlayerHp] = useState(6);
   const [enemyHp, setEnemyHp] = useState(6);
-  const [turn, setTurn] = useState('player');
+  const [turn, setTurn] = useState('player'); // 'player' или 'enemy'
   
-  const [cases, setCases] = useState([1, 1, 1]); // 1 = закрыт, 0 = открыт
+  const [cases, setCases] = useState([1, 1, 1]); // 3 кейса (1 = закрыт, 0 = открыт)
   const [showSurrenderModal, setShowSurrenderModal] = useState(false);
-
+  
   const [shells, setShells] = useState([]);
   const [currentShell, setCurrentShell] = useState(null);
+  
+  // Состояние для скина дробовика (для теста)
+  const [currentSkin, setCurrentSkin] = useState('default');
 
+  // Инициализация патронов при старте
   useEffect(() => {
     const newShells = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
     setShells(newShells);
     setCurrentShell(newShells[0]);
   }, []);
 
+  // Логика выстрела
   const handleShoot = (target) => {
     if (turn !== 'player' || shells.length === 0) return;
 
     const isLive = currentShell === 'live';
     
+    // Наносим урон
     if (isLive) {
       if (target === 'self') {
         setPlayerHp(prev => Math.max(0, prev - 1));
@@ -31,26 +39,34 @@ export default function GameScreen({ onNavigate }) {
       }
     }
 
+    // Убираем патрон
     const newShells = shells.slice(1);
     setShells(newShells);
     
+    // Перезарядка, если патроны кончились
     if (newShells.length === 0) {
       setTimeout(() => {
         const reloaded = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
         setShells(reloaded);
         setCurrentShell(reloaded[0]);
-        // Здесь можно добавить логику открытия кейса (например, cases[0] = 0)
       }, 1000);
     } else {
       setCurrentShell(newShells[0]);
     }
 
+    // Передаем ход врагу
     setTurn('enemy');
-    setTimeout(() => setTurn('player'), 2000);
+
+    // Имитация хода врага (через 2 секунды)
+    setTimeout(() => {
+      setTurn('player');
+    }, 2000);
   };
 
+  // Обработка использования предмета (двойной клик)
   const handleItemDoubleClick = (itemName, index, side) => {
     console.log(`Использован предмет: ${itemName} из ${side} сетки, слот ${index}`);
+    // Здесь будет логика применения предмета
   };
 
   const confirmSurrender = () => {
@@ -59,7 +75,7 @@ export default function GameScreen({ onNavigate }) {
 
   return (
     <div className="game-container">
-      {/* Модальное окно */}
+      {/* Модальное окно подтверждения сдачи */}
       {showSurrenderModal && (
         <div className="modal-overlay">
           <div className="modal-content">
@@ -72,7 +88,7 @@ export default function GameScreen({ onNavigate }) {
         </div>
       )}
 
-      {/* Верхняя панель */}
+      {/* Верхняя панель с кнопкой "Сдаться" и здоровьем */}
       <div className="game-hud">
         <button className="surrender-btn" onClick={() => setShowSurrenderModal(true)}>
           Сдаться
@@ -97,33 +113,58 @@ export default function GameScreen({ onNavigate }) {
         </div>
       </div>
 
-      {/* Игровое поле */}
+      {/* Игровое поле с дробовиком */}
       <div className="game-arena">
         <div className="turn-indicator">
           {turn === 'player' ? 'ВАШ ХОД' : 'ХОД ВРАГА'}
         </div>
         
         <div className="shotgun-display">
-          [ ДРОБОВИК ]
+          {/* Подключаем компонент дробовика */}
+          <Shotgun skin={currentSkin} />
         </div>
         
+        {/* Временная кнопка смены скина для проверки */}
+        <button 
+          onClick={() => setCurrentSkin(prev => prev === 'default' ? 'gold' : 'default')}
+          style={{ marginTop: '15px', color: '#fff', background: '#333', padding: '5px 10px', border: 'none', borderRadius: '5px', cursor: 'pointer' }}
+        >
+          Сменить скин
+        </button>
+
         <div className="ammo-info">
-          Текущий: {currentShell === 'live' ? '🔴 Боевой' : '⚪ Холостой'}
+          Патроны: {shells.length} | Текущий: {currentShell === 'live' ? '🔴 Боевой' : '⚪ Холостой'}
         </div>
       </div>
 
       {/* Кнопки выстрелов */}
       <div className="action-bar">
-        <button className="action-btn" onClick={() => handleShoot('self')} disabled={turn !== 'player'}>В СЕБЯ</button>
-        <button className="action-btn" onClick={() => handleShoot('enemy')} disabled={turn !== 'player'}>В ВРАГА</button>
+        <button 
+          className="action-btn" 
+          onClick={() => handleShoot('self')}
+          disabled={turn !== 'player'}
+        >
+          В СЕБЯ
+        </button>
+        <button 
+          className="action-btn" 
+          onClick={() => handleShoot('enemy')}
+          disabled={turn !== 'player'}
+        >
+          В ВРАГА
+        </button>
       </div>
 
-      {/* НОВАЯ ПАНЕЛЬ ПРЕДМЕТОВ И КЕЙСА */}
+      {/* Нижняя панель с предметами и кейсом */}
       <div className="bottom-panel">
         {/* Левая сетка предметов (2x2) */}
         <div className="items-grid left-grid">
           {[1, 2, 3, 4].map((id) => (
-            <div key={`left-${id}`} className="item-slot" onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'left')}>
+            <div 
+              key={`left-${id}`} 
+              className="item-slot" 
+              onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'left')}
+            >
               {/* Сюда потом вставим иконки */}
             </div>
           ))}
@@ -138,7 +179,11 @@ export default function GameScreen({ onNavigate }) {
         {/* Правая сетка предметов (2x2) */}
         <div className="items-grid right-grid">
           {[1, 2, 3, 4].map((id) => (
-            <div key={`right-${id}`} className="item-slot" onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'right')}>
+            <div 
+              key={`right-${id}`} 
+              className="item-slot" 
+              onDoubleClick={() => handleItemDoubleClick('Предмет', id, 'right')}
+            >
               {/* Сюда потом вставим иконки */}
             </div>
           ))}
