@@ -1,231 +1,125 @@
-.game-container {
-  display: flex;
-  flex-direction: column;
-  height: 100%;
-  width: 100%;
-  position: relative;
-  background-color: #1a1a1a;
-}
+/* --- ... (Остальные стили оставляем) ... --- */
 
-/* --- Модальное окно --- */
-.modal-overlay {
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: rgba(0,0,0,0.8);
+/* --- Нижняя панель с предметами и кейсом --- */
+.bottom-panel {
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 100;
-}
-
-.modal-content {
-  background: #222;
-  padding: 20px;
-  border-radius: 10px;
-  border: 1px solid #ff3333;
-  text-align: center;
-}
-
-.modal-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 20px;
-}
-
-.modal-buttons button {
-  padding: 10px 20px;
-  background: #333;
-  color: white;
-  border: 1px solid #555;
-  cursor: pointer;
-  border-radius: 5px;
-}
-
-.modal-buttons button:hover { background: #ff3333; }
-
-/* --- HUD --- */
-.game-hud {
-  display: flex;
-  flex-direction: column;
-  padding: 15px;
-  background-color: #111;
-  border-bottom: 2px solid #333;
-}
-
-.surrender-btn {
-  background: transparent;
-  border: none;
-  color: #888;
-  font-size: 14px;
-  cursor: pointer;
-  padding: 0;
-  margin-bottom: 10px;
-  align-self: flex-start;
-}
-
-.surrender-btn:hover { color: #ff3333; }
-
-.hud-stats {
-  display: flex;
-  justify-content: space-between;
-  width: 100%;
-}
-
-.hud-player, .hud-enemy {
-  display: flex;
-  flex-direction: column;
-  width: 45%;
-}
-
-.hud-enemy { align-items: flex-end; }
-
-.hud-label {
-  font-size: 12px;
-  color: #888;
-  margin-bottom: 5px;
-  letter-spacing: 1px;
-  text-transform: uppercase;
-}
-
-/* --- Полоски здоровья (деления) --- */
-.hp-bar {
-  display: flex;
-  gap: 2px;
-  width: 100%;
-}
-
-.hp-segment {
-  flex: 1;
-  height: 12px;
-  background-color: #333;
-  border-radius: 2px;
-}
-
-.hp-segment.filled {
-  background-color: #ff3333;
-}
-
-.hp-segment.filled.enemy {
-  background-color: #ff3333; /* Можно сделать оранжевым для врага */
-}
-
-/* --- Игровое поле --- */
-.game-arena {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  align-items: center;
-}
-
-.turn-indicator {
-  color: #ff3333;
-  font-weight: bold;
-  letter-spacing: 2px;
-  margin-bottom: 20px;
-  text-transform: uppercase;
-}
-
-.shotgun-display {
-  font-size: 24px;
-  color: #555;
-  letter-spacing: 2px;
-  padding: 40px;
-  border: 4px solid #555;
-  border-radius: 50px;
-  text-transform: uppercase;
-  font-weight: bold;
-  margin-bottom: 15px;
-}
-
-.ammo-info {
-  color: #888;
-  font-size: 14px;
-}
-
-/* --- Кейсы --- */
-.cases-bar {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-  padding: 10px;
-  color: #aaa;
-  font-size: 18px;
-}
-
-.cases-label {
-  font-size: 14px;
-  color: #666;
-  text-transform: uppercase;
-}
-
-.case-icon {
-  font-size: 24px;
-}
-
-.case-icon.opened {
-  opacity: 0.3;
-}
-
-/* --- Кнопки выстрелов --- */
-.action-bar {
-  display: flex;
-  justify-content: center;
-  gap: 15px;
-  padding: 10px 15px;
-}
-
-.action-btn {
-  background-color: #222;
-  border: 2px solid #ff3333;
-  color: white;
-  padding: 15px 25px;
-  font-size: 14px;
-  font-weight: bold;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
-  text-transform: uppercase;
-  letter-spacing: 1px;
-  flex: 1;
-  max-width: 150px;
-}
-
-.action-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-.action-btn:active:not(:disabled) { background-color: #ff3333; transform: scale(0.95); }
-
-/* --- Предметы (сетка) --- */
-.items-bar {
   padding: 15px;
   background-color: #222;
   border-top: 2px solid #444;
+  gap: 20px; /* Расстояние между сетками и кейсом */
+  width: 100%;
+  box-sizing: border-box;
 }
 
+/* Сетка 2x2 для предметов */
 .items-grid {
   display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 10px;
-  max-width: 300px;
-  margin: 0 auto;
+  grid-template-columns: repeat(2, 1fr);
+  grid-template-rows: repeat(2, 1fr);
+  gap: 8px;
+  width: 120px; /* Ширина блока с предметами */
+  height: 120px; /* Высота блока с предметами */
 }
 
+/* Слот для предмета */
 .item-slot {
-  height: 50px;
   background-color: #333;
   border: 1px solid #555;
   border-radius: 8px;
   display: flex;
   justify-content: center;
   align-items: center;
-  font-size: 12px;
-  color: #aaa;
   cursor: pointer;
-  user-select: none; /* Чтобы не выделялся текст при двойном клике */
   transition: background-color 0.2s;
+  width: 100%;
+  height: 100%;
 }
 
 .item-slot:active {
   background-color: #444;
   border-color: #ff3333;
+}
+
+/* Центральный кейс */
+.case-center {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  width: 80px;
+  height: 80px;
+  background-color: #2a2a2a;
+  border: 2px solid #555;
+  border-radius: 12px;
+  cursor: pointer;
+  position: relative;
+  transition: all 0.2s;
+}
+
+.case-center:active {
+  border-color: #ff3333;
+  transform: scale(0.95);
+}
+
+.case-icon {
+  font-size: 32px;
+}
+
+.case-count {
+  position: absolute;
+  bottom: -10px;
+  background-color: #ff3333;
+  color: white;
+  font-size: 12px;
+  font-weight: bold;
+  padding: 2px 8px;
+  border-radius: 10px;
+  border: 1px solid #111;
+}
+
+/* --- АДАПТИВНОСТЬ ДЛЯ НИЖНЕЙ ПАНЕЛИ --- */
+@media (max-width: 360px) {
+  .bottom-panel {
+    gap: 10px;
+    padding: 10px;
+  }
+  
+  .items-grid {
+    width: 100px;
+    height: 100px;
+    gap: 4px;
+  }
+  
+  .case-center {
+    width: 60px;
+    height: 60px;
+  }
+  
+  .case-icon {
+    font-size: 24px;
+  }
+}
+
+@media (min-width: 481px) {
+  .bottom-panel {
+    gap: 40px;
+    padding: 20px;
+  }
+
+  .items-grid {
+    width: 160px;
+    height: 160px;
+    gap: 10px;
+  }
+
+  .case-center {
+    width: 100px;
+    height: 100px;
+  }
+
+  .case-icon {
+    font-size: 48px;
+  }
 }
