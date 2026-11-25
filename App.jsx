@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import MainMenu from './components/MainMenu';
 import HelpScreen from './components/HelpScreen';
+import GameScreen from './components/GameScreen';
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('menu');
@@ -25,16 +26,9 @@ export default function App() {
         </div>
       )}
 
-      {/* ТЕСТОВЫЙ ЭКРАН ВМЕСТО ИГРЫ */}
       {currentScreen === 'game' && (
-        <div className="screen-fade" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', flexDirection: 'column' }}>
-          <h1 style={{ color: '#ff3333', fontSize: '32px' }}>ТЕСТ: ЭКРАН ИГРЫ РАБОТАЕТ</h1>
-          <button 
-            onClick={() => setCurrentScreen('menu')}
-            style={{ marginTop: '20px', padding: '10px 20px', background: 'none', border: '1px solid #555', color: 'white', borderRadius: '5px' }}
-          >
-            Назад в меню
-          </button>
+        <div className="screen-fade">
+          <GameScreen onNavigate={setCurrentScreen} />
         </div>
       )}
     </div>
