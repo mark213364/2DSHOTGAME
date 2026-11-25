@@ -1,20 +1,28 @@
 import { useState } from 'react';
+import Toast from './Toast'; // <-- Импортируем Toast
 import './MainMenu.css';
 
 export default function MultiplayerScreen({ onNavigate }) {
   const [code, setCode] = useState('');
-  const [hoveredBtn, setHoveredBtn] = useState(null); // 'create', 'join', 'back'
+  const [hoveredBtn, setHoveredBtn] = useState(null);
+  
+  // Состояние для уведомления
+  const [toast, setToast] = useState({ isVisible: false, message: '' });
+
+  const showToast = (message) => {
+    setToast({ isVisible: true, message });
+  };
 
   const createGame = () => {
     const newCode = Math.floor(10000000 + Math.random() * 90000000).toString();
-    alert(`Игра создана! Код для друга: ${newCode}\n(Сетевой код добавим позже)`);
+    showToast(`Игра создана! Код: ${newCode}`);
   };
 
   const joinGame = () => {
     if (code.length === 8) {
-      alert(`Подключение к игре ${code}... (В разработке)`);
+      showToast(`Подключение к игре ${code}...`);
     } else {
-      alert('Введите 8-значный код');
+      showToast('Введите 8-значный код!');
     }
   };
 
@@ -23,7 +31,6 @@ export default function MultiplayerScreen({ onNavigate }) {
       <h1 className="menu-title">МУЛЬТИПЛЕЕР</h1>
       
       <div className="menu-buttons">
-        {/* Кнопка Создать */}
         <button 
           className={`menu-btn ${hoveredBtn === 'create' ? 'selected' : ''}`}
           onMouseEnter={() => setHoveredBtn('create')}
@@ -50,7 +57,6 @@ export default function MultiplayerScreen({ onNavigate }) {
               borderRadius: '5px' 
             }}
           />
-          {/* Кнопка Присоединиться */}
           <button 
             className={`menu-btn ${hoveredBtn === 'join' ? 'selected' : ''}`}
             onMouseEnter={() => setHoveredBtn('join')}
@@ -61,7 +67,6 @@ export default function MultiplayerScreen({ onNavigate }) {
           </button>
         </div>
 
-        {/* Кнопка Назад */}
         <button 
           className={`menu-btn ${hoveredBtn === 'back' ? 'selected' : ''}`}
           onMouseEnter={() => setHoveredBtn('back')}
@@ -72,6 +77,13 @@ export default function MultiplayerScreen({ onNavigate }) {
           {hoveredBtn === 'back' ? '> НАЗАД <' : 'НАЗАД'}
         </button>
       </div>
+
+      {/* Уведомление */}
+      <Toast 
+        message={toast.message} 
+        isVisible={toast.isVisible} 
+        onClose={() => setToast({ ...toast, isVisible: false })} 
+      />
     </div>
   );
 }
