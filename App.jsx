@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import MainMenu from './components/MainMenu';
 import HelpScreen from './components/HelpScreen';
-import GameScreen from './components/GameScreen';
+import GameScreen from './components/GameScreen'; // <-- Вернули импорт
 
 export default function App() {
   const [currentScreen, setCurrentScreen] = useState('menu');
