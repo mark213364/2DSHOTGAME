@@ -37,7 +37,7 @@
   font-size: 22px;
   padding: 10px;
   cursor: pointer;
-  transition: all 0.2s ease;
+  transition: all 0.2s ease; /* <-- Эта строка нужна для плавности */
   font-family: inherit;
   font-weight: bold;
   letter-spacing: 2px;
