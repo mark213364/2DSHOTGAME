@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import Shotgun from './svg/Shotgun';
 import './GameScreen.css';
 
-export default function GameScreen({ onNavigate, mode = 'bot' }) {
+export default function GameScreen({ onNavigate, mode = 'bot', roomCode }) {
   const [playerHp, setPlayerHp] = useState(6);
   const [enemyHp, setEnemyHp] = useState(6);
   const [turn, setTurn] = useState('player');
@@ -12,45 +12,42 @@ export default function GameScreen({ onNavigate, mode = 'bot' }) {
   
   const [shells, setShells] = useState([]);
   const [currentShell, setCurrentShell] = useState(null);
-  
   const [currentSkin] = useState('default');
-  
-  // Состояние для поворота дробовика: 'none', 'self', 'enemy'
   const [aimDirection, setAimDirection] = useState('none');
+
+  const isWaiting = mode === 'multiplayer_wait';
 
   // Инициализация патронов
   useEffect(() => {
-    const newShells = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
-    setShells(newShells);
-    setCurrentShell(newShells[0]);
-  }, []);
+    if (!isWaiting) {
+      const newShells = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
+      setShells(newShells);
+      setCurrentShell(newShells[0]);
+    }
+  }, [isWaiting]);
 
   // --- ЛОГИКА БОТА ---
   useEffect(() => {
     if (mode === 'bot' && turn === 'enemy' && shells.length > 0) {
       const timer = setTimeout(() => {
         const isLive = currentShell === 'live';
-        
-        // Примитивный ИИ: Если патрон боевой - стреляет в игрока, если холостой - в себя
         if (isLive) {
-          handleShoot('enemy_target_player'); // Бот стреляет в игрока
+          handleShoot('enemy_target_player');
         } else {
-          handleShoot('enemy_target_self'); // Бот стреляет в себя
+          handleShoot('enemy_target_self');
         }
-      }, 1500); // Задержка, чтобы игрок увидел "ХОД ВРАГА"
-
+      }, 1500);
       return () => clearTimeout(timer);
     }
   }, [turn, mode, currentShell, shells.length]);
 
   // --- ЛОГИКА ВЫСТРЕЛА ---
   const handleShoot = (action) => {
-    if (shells.length === 0) return;
+    if (shells.length === 0 || isWaiting) return;
 
     const isLive = currentShell === 'live';
     let target = '';
 
-    // Определяем цель и направление ствола
     if (action === 'self') {
       target = 'player';
       setAimDirection('self');
@@ -59,53 +56,58 @@ export default function GameScreen({ onNavigate, mode = 'bot' }) {
       setAimDirection('enemy');
     } else if (action === 'enemy_target_player') {
       target = 'player';
-      setAimDirection('self'); // Дробовик бота смотрит на игрока
+      setAimDirection('self');
     } else if (action === 'enemy_target_self') {
       target = 'enemy';
-      setAimDirection('enemy'); // Дробовик бота смотрит на себя
+      setAimDirection('enemy');
     }
 
-    // Наносим урон
     if (isLive) {
-      if (target === 'player') {
-        setPlayerHp(prev => Math.max(0, prev - 1));
-      } else if (target === 'enemy') {
-        setEnemyHp(prev => Math.max(0, prev - 1));
-      }
+      if (target === 'player') setPlayerHp(prev => Math.max(0, prev - 1));
+      else if (target === 'enemy') setEnemyHp(prev => Math.max(0, prev - 1));
     }
 
-    // Убираем патрон
     const newShells = shells.slice(1);
     setShells(newShells);
     
-    // Перезарядка
     if (newShells.length === 0) {
       setTimeout(() => {
         const reloaded = [...Array(3).fill('live'), ...Array(3).fill('blank')].sort(() => Math.random() - 0.5);
         setShells(reloaded);
         setCurrentShell(reloaded[0]);
-        setAimDirection('none'); // Возвращаем дробовик в исходное положение
       }, 1000);
     } else {
       setCurrentShell(newShells[0]);
     }
 
-    // Передаем ход
-    if (turn === 'player') {
-      setTurn('enemy');
-    } else {
-      setTurn('player');
-    }
+    if (turn === 'player') setTurn('enemy');
+    else setTurn('player');
 
-    // Возвращаем дробовик в исходное положение через 1.5 секунды
-    setTimeout(() => {
-      setAimDirection('none');
-    }, 1500);
+    setTimeout(() => setAimDirection('none'), 1500);
   };
 
   const handleItemDoubleClick = (itemName, index, side) => {
     console.log(`Использован предмет: ${itemName} из ${side} сетки, слот ${index}`);
   };
+
+  // --- ЭКРАН ОЖИДАНИЯ СОПЕРНИКА ---
+  if (isWaiting) {
+    return (
+      <div className="game-container" style={{ justifyContent: 'center', alignItems: 'center' }}>
+        <h2 style={{ color: '#888', marginBottom: '20px' }}>ОЖИДАНИЕ СОПЕРНИКА...</h2>
+        <div style={{ fontSize: '24px', color: '#ff3333', letterSpacing: '4px', marginBottom: '40px' }}>
+          КОД КОМНАТЫ: {roomCode}
+        </div>
+        <button 
+          className="action-btn" 
+          onClick={() => onNavigate('multiplayer')}
+          style={{ maxWidth: '200px' }}
+        >
+          ОТМЕНА
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="game-container">
@@ -135,7 +137,7 @@ export default function GameScreen({ onNavigate, mode = 'bot' }) {
             </div>
           </div>
           <div className="hud-enemy">
-            <span className="hud-label">ВРАГ</span>
+            <span className="hud-label">{mode === 'bot' ? 'ВРАГ' : 'СОПЕРНИК'}</span>
             <div className="hp-bar">
               {[...Array(6)].map((_, i) => (
                 <div key={i} className={`hp-segment ${i < enemyHp ? 'filled enemy' : ''}`}></div>
@@ -150,7 +152,6 @@ export default function GameScreen({ onNavigate, mode = 'bot' }) {
           {turn === 'player' ? 'ВАШ ХОД' : 'ХОД ВРАГА'}
         </div>
         
-        {/* Добавляем класс для поворота */}
         <div className={`shotgun-display ${aimDirection === 'self' ? 'aim-self' : aimDirection === 'enemy' ? 'aim-enemy' : ''}`}>
           <Shotgun skin={currentSkin} />
         </div>
