@@ -4,10 +4,9 @@ import './MainMenu.css';
 export default function MainMenu({ onNavigate }) {
   const [selectedIndex, setSelectedIndex] = useState(0);
 
-  // Обратите внимание на action для кнопки "Играть"
   const menuItems = [
-    { label: 'Играть', action: () => onNavigate('game') }, 
-    { label: 'Настройки', action: () => console.log('Настройки в разработке') },
+    { label: 'Играть', action: () => onNavigate('modeSelect') },
+    { label: 'Настройки', action: () => console.log('Настройки') },
     { label: 'Помощь', action: () => onNavigate('help') }
   ];
 
@@ -20,12 +19,12 @@ export default function MainMenu({ onNavigate }) {
           <button
             key={item.label}
             className={`menu-btn ${selectedIndex === index ? 'selected' : ''}`}
+            onMouseEnter={() => setSelectedIndex(index)} // Выделение при наведении мыши
             onClick={() => {
               setSelectedIndex(index);
               item.action();
             }}
           >
-            {/* Рендерим обрамление > ... < только для выбранной кнопки */}
             {selectedIndex === index ? `> ${item.label} <` : item.label}
           </button>
         ))}
