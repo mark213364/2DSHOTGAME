@@ -1,5 +1,7 @@
 name = "2dshotgame"
 compatibility_date = "2024-11-01"
+main = "worker.js" # <-- Указываем наш новый файл
 
 [assets]
 directory = "./dist"
+binding = "ASSETS" # <-- Даем имя для доступа к статике из кода
